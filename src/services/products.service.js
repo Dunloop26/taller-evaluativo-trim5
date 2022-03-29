@@ -15,5 +15,10 @@ module.exports = {
     }
     await connection.query(`INSERT INTO productos(nombre, precio) VALUES("${nombre}", ${precio})`)
     connection.end();
+  },
+  getAll: async () => {
+    const connection = await databaseSrv.createConnection();
+    const [data] = await connection.query("SELECT * FROM productos");
+    return data;
   }
 }

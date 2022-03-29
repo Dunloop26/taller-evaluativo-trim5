@@ -6,7 +6,7 @@ const loginValidator = require("../validators/login.validator");
 const createProductValidator = require("../validators/create-product.validator");
 const registerSrv = require("../services/register.service");
 const loginSrv = require("../services/login.service");
-const createProductSrv = require("../services/create-product.service");
+const productSrv = require("../services/products.service");
 
 
 routes.post("/register", registerValidator.params, validate, async (req, res) => {
@@ -45,9 +45,25 @@ routes.post("/crearproducto", createProductValidator.params, validate, async(req
     const { nombre, precio } = req.body;
     const { authorization } = req.headers;
     const token = authorization.split(" ")[1];
-    await createProductSrv.create(nombre, precio, token);
+    await productSrv.create(nombre, precio, token);
     return res.status(200).json({
       msg: `Producto "${req.body.nombre}" creado`
+    })
+  } catch(e) {
+    console.error("Create Product Error: ", e)
+    return res.status(500).json({
+      msg: "Algo anda mal",
+      error: e.message
+    })
+  }
+})
+
+routes.get("/productos", async(req, res) => {
+  try {
+    const productos = await productSrv.getAll();
+    res.status(200).json({
+      msg: "Productos obtenidos",
+      productos
     })
   } catch(e) {
     console.error("Create Product Error: ", e)
