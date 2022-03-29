@@ -42,7 +42,10 @@ routes.post("/login", loginValidator.params, validate, async (req, res) => {
 
 routes.post("/crearproducto", createProductValidator.params, validate, async(req, res) => {
   try {
-    await createProductSrv.create(req.body);
+    const { nombre, precio } = req.body;
+    const { authorization } = req.headers;
+    const token = authorization.split(" ")[1];
+    await createProductSrv.create(nombre, precio, token);
     return res.status(200).json({
       msg: `Producto "${req.body.nombre}" creado`
     })
